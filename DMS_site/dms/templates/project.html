@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container pt-4'>
+        <div class='row jumbotron mx-0 py-4 px-3 mb-4' >
+            <div class='col-md-3 '>
+                <p class='lead mb-0'>Project key : <strong>{{ project.project_key }}</strong></p>
+            </div>            
+            <div class='col-md-3'>
+                <p class='lead mb-0'>Project name :  <strong>{{ project.project_name }} </strong></p>
+            </div>
+            <div class='col-md-6 clearfix'>
+                <div class='float-right'>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle float-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add document
+                        </button>
+                        <div class="dropdown-menu px-3" aria-labelledby="btnGroupDrop1">
+                        
+                            {% if docs_to_add %}
+                            <h6 class="dropdown-header">Add a document</h6>
+                            {% for d in docs_to_add %}
+                            <a class="dropdown-item" href="/projects/project/add_document/{{ project.project_key }}/{{ d.id }}/">{{ d.name }}</a>
+                            {% endfor %}
+                            {% else %}
+                            <div class="text-center">No documents to add</div>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <!-- <a class="dropdown-item" href="/documents/new_document/{{ project.project_key  }}">Create new</a> -->
+                            <button type="button" class="dropdown-item btn btn-light" data-toggle="modal" data-target="#modal">
+                                Create new
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalComment">
+                        Comment
+                    </button>
+                    {% if user in project.admin_users.all %}
+                    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modalTask">
+                        Add task
+                    </button>
+                    <a class="btn btn-dark" href="/projects/project_log/{{ project.project_key }}" role="button">Information</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if comments %}
+        <div class='row mx-0'>
+            <div class='col-md-9 py-0 px-0'>
+        {% else %}
+        <div class='row mx-0'>
+            <div class='col-sm py-0 px-0'>
+        {% endif %}
+                <div class='row mx-0 jumbotron py-3 px-3'>
+                    {% if project.documents.all %}
+                        {% for d in project.documents.all %}
+                        <div class='col-auto mt-2'>
+                            <div class="card text-center">
+                                <a class="text-dark" href="/documents/document/{{ d.id }}" role="button">
+                                <div class="card-body">
+                                    {{ d.name }}
+                                </div>
+                                </a>
+                                <div class='card-text'>
+                                    <a class="btn btn-dark btn-block btn-sm" href="/projects/project/delete_from_project/{{ project.project_key }}/{{ d.id }}/" role="button">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class='col'>
+                            <h1 class='text-center'>No documents</h1>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if Tasks %}
+                <div class='row mx-0  jumbotron py-3 px-3'>
+                    <div class='col' >
+                        <h1 class=' text-center mb-3'>Current tasks</h1>
+                    </div>
+                    <div class='col-12'>
+                        <div class='row'>
+                            {% for task in Tasks %}
+                            <div class="col-lg-4 pb-3 mb-3">
+                                <div class='card '>
+                                    <div class="card-body px-0 py-2">
+                                      <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                        <div class='row mb-0 card-title'>
+                                            <div class='col-10'>
+                                                <h5>{{task.menRespons.first_name}} {{task.menRespons.last_name}}</h5>
+                                            </div>
+                                            <div class='col-2 clearfix'>
+                                            {% if task.taskGiver == user %}
+                                            <form method='post' class='float-right' action='/projects/project/{{ project.project_key }}/'>
+                                                {% csrf_token %}
+                                                <input name='delete_task'
+                                                       id="delete_task"
+                                                       type = 'hidden'
+                                                       value = '{{ task.id }}'>
+                                                <button type="submit" class="close float-right" id='delete_task' aria-label="delete_task">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            </div>
+                                        </div>
+                                            <p class='mb-0'><strong>{{task.task}}</strong></p>
+                                            <a class=" nounderline"
+                                               href="/profile/{{task.taskGiver.id}}"
+                                               style='text-decoration: none;white-space: nowrap;color: inherit;'
+                                               data-toggle="tooltip"
+                                               title ="See profile">
+                                            <footer class="blockquote-footer text-right">{{task.taskGiver.first_name}} {{task.taskGiver.last_name}}</footer>
+                                            </a>
+                                        </li>
+                                        <li class="list-group-item">Task start: <strong>{{task.createDate}}</strong></li>
+                                        <li class="list-group-item">Deadline: <strong>{{task.dueDate}}</strong></li>
+                                        {% if task.menRespons == user %}
+                                        <li class="list-group-item clearfix">
+                                            <form method='post' class='my-0' enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class='form-group mb-0'>
+                                                    <input name='{{ formDone.taskId.html_name }}' 
+                                                           id="{{ formDone.taskId.id_for_label }}"
+                                                           type = 'hidden' 
+                                                           value='{{task.id}}'>
+                                                    <button class='btn btn-dark float-right' type='submit'>Accomplish</button>
+                                                </div>
+                                            </form>
+                                        </li>
+                                        {% endif %}
+                                      </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                         </div>
+                     </div>
+                </div>
+                {% endif %}
+                {% if TasksDone %}
+                <div class='row mx-0 jumbotron py-3 px-3'>
+                    <div class='col' >
+                        <h1 class=' text-center'>Complited tasks</h1>
+                    </div>
+                    <div class='col-12'>
+                        <div class='row'>
+                        {% for task in TasksDone %}
+                            <div class='col-lg-4 mb-3'>
+                                <div class='card'>
+                                    <div class="card-body px-0 py-2">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                        <div class='row mb-0 card-title'>
+                                            <div class='col-10'>
+                                                <h5>{{task.menRespons.first_name}} {{task.menRespons.last_name}}</h5>
+                                            </div>
+                                            <div class='col-2 clearfix'>
+                                            {% if task.taskGiver == user %}
+                                            <form method='post' class='float-right' action='/projects/project/{{ project.project_key }}/'>
+                                                {% csrf_token %}
+                                                <input name='delete_task'
+                                                       id="delete_task"
+                                                       type = 'hidden'
+                                                       value = '{{ task.id }}'>
+                                                <button type="submit" class="close float-right" id='delete_task' aria-label="delete_task">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            </div>
+                                        </div>
+                                        <blockquote class="blockquote">
+                                        <p class='mb-0'><strong>{{task.task}}</strong></p>
+                                        <footer class="blockquote-footer text-right">{{task.taskGiver.first_name}} {{task.taskGiver.last_name}}</footer>
+                                        </blockquote>
+                                        </li>
+                                        <li class="list-group-item">Task start: <strong>{{task.createDate}}</strong></li>
+                                        <li class="list-group-item">Deadline: <strong>{{task.dueDate}}</strong></li>
+                                    </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+            </div>
+            {% if comments %}
+            <div class='col-md-3 px-0'>
+                    {% for comment in comments %}
+                    <div class='row pl-3 mx-0'>
+                        <div class='col jumbotron py-1 px-1 mb-2'>
+                            <div class='row mx-0 my-0'>
+                                <div class = 'col-11 pl-2 pr-3 py-0'>
+                                  <p class="mb-0">{{ comment.text }}</p>
+                                  <footer class="blockquote-footer">
+                                <a class=" nounderline"
+                                   href="/profile/{{ comment.user.id }}"
+                                   style='text-decoration: none;white-space: nowrap;color: inherit;'
+                                   data-toggle="tooltip"
+                                   title ="See profile">
+                                {{ comment.user.first_name }} {{ comment.user.last_name }}
+                                </a>
+                                  </footer>
+                                </div>
+                                <div class = 'col-1 pl-0 pr-1 py-0'>
+                                    {% if comment.user == user %}
+                                    <form method='post' action='/projects/project/{{ project.project_key }}/'>
+                                        {% csrf_token %}
+                                        <input name='delete_comment'
+                                               id="delete_comment"
+                                               type = 'hidden'
+                                               value = '{{ comment.id }}'>
+                                        
+                                        <button type="submit" class="close" id='delete' aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Load file</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" class=''  action='/projects/project/{{ project.project_key }}/' method='post'>
+                {% csrf_token %}
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file"
+                                   name='{{ form2.file.html_name }}'
+                                   class="custom-file-input"
+                                   id="{{ form2.file.id_for_label }}">
+                            <label class="custom-file-label"  for="{{ form2.file.id_for_label }}">Chose file</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-dark" type="submit" id="{{ form2.file.id_for_label }}">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalComment" tabindex="-1" role="dialog" aria-labelledby="modalComment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method='post' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class='form-group'>
+                        <textarea name='{{ form.text.html_name }}' class="form-control" id="{{ form.text.id_for_label }}" rows="3"></textarea>
+                    </div>
+                    <button class='btn btn-dark' type='submit'>Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalTask" tabindex="-1" role="dialog" aria-labelledby="modalTask" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method='post' enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ formTask.task.id_for_label }}">Task</label>
+                        <textarea name='{{ formTask.task.html_name }}'
+                                  class="form-control"
+                                  id="{{ formTask.task.id_for_label }}"
+                                  placeholder = 'Task to do'></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ formTask.menRespons.id_for_label }}">
+                            Performer
+                        </label>
+                        <select name='{{ formTask.menRespons.html_name }}' class="form-control" id="{{ formTask.menRespons.id_for_label }}">
+                        {% for worker in Workers %}
+                            <option value='{{ worker.id }}'>{{ worker.first_name }} {{ worker.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                   <div class="form-group">
+                        <label for="{{ formTask.dueDate.html_name }}"
+                               class="col-form-label">Deadline
+                        </label>
+                        <input name='{{ formTask.dueDate.html_name }}'
+                               class="form-control"
+                               type="date"
+                               id="{{ formTask.dueDate.id_for_label }}">
+                    </div>
+                    <button class='btn btn-dark float-right' type='submit'>Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+<NotepadPlus>
+    <Project name="django">
+        <Folder name="dms">
+            <Folder name="templates">
+                <File name="templates\base.html" />
+                <File name="templates\document.html" />
+                <File name="templates\documents.html" />
+                <File name="templates\edit_password.html" />
+                <File name="templates\edit_profile.html" />
+                <File name="templates\index.html" />
+                <File name="templates\log.html" />
+                <File name="templates\login.html" />
+                <File name="templates\new_document.html" />
+                <File name="templates\new_project.html" />
+                <File name="templates\profile.html" />
+                <File name="templates\project.html" />
+                <File name="templates\projects.html" />
+                <File name="templates\register.html" />
+            </Folder>
+            <File name="admin.py" />
+            <File name="apps.py" />
+            <File name="forms.py" />
+            <File name="models.py" />
+            <File name="tests.py" />
+            <File name="urls.py" />
+            <File name="views.py" />
+            <File name="workspace" />
+            <File name="__init__.py" />
+        </Folder>
+        <Folder name="storage">
+            <Folder name="logs">
+                <Folder name="2018-11-16_01_02_54">
+                    <File name="C:\django\mysite\storage\logs\2018-11-16_01_02_54\blank page_old.pdf" />
+                </Folder>
+            </Folder>
+            <Folder name="profiles">
+                <File name="C:\django\mysite\storage\profiles\default.jpeg" />
+            </Folder>
+            <Folder name="projects">
+                <Folder name="1" />
+                <Folder name="19" />
+                <Folder name="2">
+                    <File name="C:\django\mysite\storage\projects\2\blank page.pdf" />
+                </Folder>
+                <Folder name="3" />
+                <Folder name="4" />
+            </Folder>
+            <Folder name="users">
+                <Folder name="1">
+                    <File name="C:\django\mysite\storage\users\1\6 - Copy (3).pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6_new.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6_new_new.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6_new_new_new.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6_new_new_new_new.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\6_new_new_new_new_new.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\blank page.pdf" />
+                    <File name="C:\django\mysite\storage\users\1\Doctor signup (4).pdf" />
+                </Folder>
+                <Folder name="2" />
+                <File name="C:\django\mysite\storage\users\default.jpeg" />
+            </Folder>
+        </Folder>
+        <Folder name="mysite">
+            <File name="C:\django\mysite\mysite\settings.py" />
+            <File name="C:\django\mysite\mysite\urls.py" />
+            <File name="C:\django\mysite\mysite\wsgi.py" />
+            <File name="C:\django\mysite\mysite\__init__.py" />
+        </Folder>
+    </Project>
+</NotepadPlus>

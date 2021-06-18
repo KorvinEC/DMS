@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container pt-4'>
+        <div class='row mx-0'>
+            <div class='col-md-10 jumbotron pt-0 pb-3 px-3'>
+                <div class='row mx-0'>
+                {% if not projects %}
+                    <div class='col text-center'>
+                        <h1>No projects</h6>
+                    </div>
+                {% else %}
+                    {% for p in projects %}
+                        <div class='col-md-auto mt-3'>
+                            <div class="card text-center">
+                                <a class="text-dark nounderline"
+                                   href="/projects/project/{{ p.project_key }}"
+                                   style='text-decoration: none;white-space: nowrap;'
+                                   data-toggle="tooltip"
+                                   title ="Go to projct">
+                                <div class="card-body px-2">
+                                    {{ p.project_name }}
+                                </div>
+                                </a>
+                                <div class='card-text'>
+                                    <!-- <a class="btn btn-dark btn-sm btn-block" href="/projects/project/{{ p.project_key }}" role="button">View -->
+                                    <a class="btn btn-dark btn-sm btn-block" href="/projects/delete_project/{{ p.project_key }}" role="button">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <a class="btn btn-dark btn-block mb-2" href="/projects/new_project/" role="button">New Project</a>
+                <form enctype="multipart/form-data" action='/projects/' method='post'>
+                    {% csrf_token %}
+                    <!-- {{ form }} -->
+                    <div class="input-group">
+                        <input type="text" name='join project' class="form-control" placeholder="Key" aria-label="Key" aria-describedby="button-addon">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-dark" type="submit" id="button-addon">Join</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- <form> -->
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+{% endblock %}

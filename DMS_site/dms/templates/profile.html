@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container pt-4'>
+        <div class='row mx-0'>
+            <div class='col-md-9'>
+                <div class='jumbotron px-3 py-3'>
+                <p class='lead'>User id: {{ user.username }}</p>
+                <p class='lead'>Full name: {{ user.first_name }} {{ user.last_name }}</p>
+                <p class='lead'>Email: {% if user.email %}{{ user.email }}{%else%}No email{% endif %}</p>
+                </div>
+            </div>
+            {% if not Observer %}
+            <div class='col-md-3 px-3'>
+                <a class="btn btn-dark btn-block" href='/profile/edit/'>Change info</a>
+                <a class="btn btn-dark btn-block" href='/profile/change_password/'>Change password</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

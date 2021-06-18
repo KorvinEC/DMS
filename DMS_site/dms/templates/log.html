@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container pt-4'>
+    <div class='row mx-0'>
+        <div class='col-md-4 float-right'>
+            <div class=' jumbotron px-3 py-3 clearfix'>
+            <p class='lead'>Involved users :</p>
+            <div class='row mx-0'>
+                {% for u in project.users.all %}
+                <div class='col-sm-11 px-0'>
+                    <a class='text-dark'
+                       style='text-decoration: none;white-space: nowrap;color: inherit;'
+                       href='/profile/{{ u.id }}'
+                       data-toggle="tooltip"
+                       title ="See profile">
+                    <strong>{{ u.first_name }} {{ u.last_name }}</strong>
+                    </a>
+                </div>
+                <div class='col-sm-1 px-0 clearfix'>
+                    <form method='post' class='float-right' action='/projects/project_log/{{ project.project_key }}/'>
+                        {% csrf_token %}
+                        <input name='delete_user'
+                               id="delete_user"
+                               type = 'hidden'
+                               value = '{{ u.id }}'>
+                        <button type="submit" class="close float-right" id='delete_user' aria-label="delete_user">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if form.users.1 %}
+            <button type="button" class="btn btn-dark float-right" data-toggle="modal" data-target="#modalUsers">
+                Add users
+            </button>
+            {% endif %}
+            </div>
+        </div>
+        {% for l in logs %}
+        <div class='col-md-3'>
+            <div class='jumbotron px-3 py-3'>
+            <p>user : <strong>{{ l.user.first_name }} {{ l.user.last_name}}</strong></p>
+            <p>date : <strong>{{ l.date }}</strong></p>
+            <p>act : <strong>{{ l.act }}</strong></p>
+            <p>project key : <strong>{{ l.project.project_key}}</strong></p>
+            {% if l.document.name %}
+            <p>document name : <strong>{{ l.document.name }}</strong></p>
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="modalUsers" tabindex="-1" role="dialog" aria-labelledby="modalUsers" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form enctype="multipart/form-data" action='/projects/project_log/{{ project.project_key }}/' method='post'>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.users.id_for_label }}">Users to add:</label>
+                    <select multiple
+                            name='{{ form.users.html_name }}'
+                            size='{{ form.users|length  }}'
+                            class="form-control"
+                            id="{{ form.users.id_for_label }}">
+                    {% for item in form.users %}
+                        {{ item }}
+                    {% endfor %}
+                    </select>
+                    {% for error in form.users.errors %}
+                    <div class="alert alert-warning my-1" role='alert'>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            <button type="submit" class='btn btn-dark' id='btnSubmit'>Create project</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <script> -->
+<!-- $(function () { -->
+   <!-- $("#select").attr("size",$("#multiSelect option").length); -->
+<!-- }); -->
+<!-- </script> -->
+
+{% endblock %}

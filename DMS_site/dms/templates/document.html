@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container pt-4 '>
+        <div class='row'>
+            <div class='col-9'>
+                <div class='row'>
+                    <div class='col-12 jumbotron py-3 px-3 mx-0'>
+                        <p class='lead'>Document name : <strong>{{ document.name }}</strong></p>
+                        <p class='lead'>Document id : <strong>{{ document.id }}</strong></p>
+                        <p class='lead'>Author : <strong>{{ document.author.first_name }} {{ document.author.last_name }}</strong></p>
+                        <div class='row'>
+                            <div class='col py-1'>
+                                <a class="btn btn-dark btn-sm" href="/documents/download/{{ document.id }}" role="button">Download</a>
+                                <a class="btn btn-dark btn-sm" href="/documents/view/{{ document.id }}" role="button">View</a>
+                                <div class="dropdown" style='display: inline;'>                                
+                                    <button class="btn btn-dark btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Update
+                                    </button>
+                                    <div class="dropdown-menu px-2" aria-labelledby="dropdownMenuButton">
+                            <form enctype="multipart/form-data" class=' mx-3 my-3' style='width:350;' action='/documents/document/{{ document.id }}/' method='post'>
+                                {% csrf_token %}
+                               <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file" name='{{ form.file.html_name }}' class="custom-file-input" id="{{ form.file.id_for_label }}">
+                                    <label class="custom-file-label" for="{{ form.file.id_for_label }}">Choose file</label>
+                                  </div>
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-dark" type="submit" id="{{ form.file.id_for_label }}">Button</button>
+                                  </div>
+                                </div>
+                            </form>
+                                    </div>
+                                </div>
+                                
+                                <a class="btn btn-dark btn-sm" href="/documents/delete_document/{{ document.id }}/" role="button">Delete</a>
+                            </div>                            
+                        </div>
+                        <div class='row'>
+                            <div class='col py-1'>
+                                <a class="btn btn-dark btn-sm" href="/documents/sign_document/{{ document.id }}/" role="button">Sign</a>
+                                <!-- <a class="btn btn-dark btn-sm" href="/documents/generate_key/{{ document.id }}/" role="button">Generate key </a> -->
+                                <a class="btn btn-dark btn-sm " href="/documents/check_document/{{ document.id }}/" role="button">Check </a>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class='col-12 px-0'>
+                    <div class ='row'>
+                    {% for log in logs %}
+                        <div class = 'col-4'>
+                            <div class='jumbotron py-3 px-3 clearfix'>
+                                <p class='lead mb-0'>user : <strong>{{ log.user.first_name }} {{ log.user.last_name }}</strong></p>
+                                <p class='lead mb-0'>date : <strong>{{ log.date }}</strong></p>
+                                <p class='lead mb-0'>act : <strong>{{ log.act }}</strong></p>
+                                {% if log.project %}
+                                <p class='lead mb-0'>project key : <strong>{{ log.project.project_key}}</strong></p>
+                                {% endif %}
+                                {% if log.act == 'Updating document' %}
+                                <a class="btn btn-dark btn-sm float-right" href="/documents/revert_log/{{ document.id }}/{{ log.id }}" role="button">revert</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-3'>
+                <div class='row mx-0'>
+                <div class = 'col jumbotron px-3 pt-3 pb-1 mb-2'>
+                    <form method='post' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class='form-group'>
+                            <textarea name='{{ form2.text.html_name }}' class="form-control" id="{{ form2.text.id_for_label }}" rows="3"></textarea>
+                        </div>
+                        <button class='btn btn-dark float' type='submit'>Comment</button>
+                    </form>
+                </div>
+                </div>
+
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class='row mx-0'>
+                        <div class='col jumbotron py-1 px-1 mb-2'>
+                            <div class='row mx-0 my-0'>
+                                <div class = 'col-11 pl-2 pr-3 py-0'>
+                                  <p class="mb-0">{{ comment.text }}</p>
+                                  <footer class="blockquote-footer">
+                                <a class=" nounderline"
+                                   href="/profile/{{ comment.user.id }}"
+                                   style='text-decoration: none;white-space: nowrap;color: inherit;'
+                                   data-toggle="tooltip"
+                                   title ="See profile">
+                                {{ comment.user.first_name }} {{ comment.user.last_name }}
+                                </a>
+                                  </footer>
+                                </div>
+                                <div class = 'col-1 pl-0 pr-1 py-0'>
+                                    {% if comment.user == user %}
+                                    <form method='post' action='/documents/document/{{ comment.document.id }}/'>
+                                        {% csrf_token %}
+                                        <input name='delete_comment'
+                                               id="delete_comment"
+                                               type = 'hidden'
+                                               value = '{{ comment.id }}'>
+                                        
+                                        <button type="submit" class="close" id='delete' aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class = 'jumbotron py-3 px-3 mb-2 text-center'>
+                        <p class='lead mb-0'>No comments</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

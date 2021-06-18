@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container pt-4'>
+        <div class='row pb-4'>
+            <div class="col-md-3">
+                <div class="dropdown mx-3 my-3">
+                      <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            New document
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <form enctype="multipart/form-data" class='mx-3 my-3' style='width:350;'  action='/documents/' method='post'>
+                                {% csrf_token %}
+                               <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file"
+                                           name='{{ form.file.html_name }}'
+                                           class="custom-file-input"
+                                           id="{{ form.file.id_for_label }}">
+                                    <label class="custom-file-label"  for="{{ form.file.id_for_label }}">Chose file</label>
+                                  </div>
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-dark" type="submit" id="{{ form.file.id_for_label }}">Send</button>
+                                  </div>
+                                </div>
+                            </form>
+                      </div>
+                </div>
+            </div>
+            <div class='col-md-9'>
+                <form enctype="multipart/form-data" class=' mx-3 my-3'  action='/documents/' method='post'>
+                {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text"
+                               name='{{ form2.search_query.html_name }}'
+                               class="form-control"
+                               placeholder="Search document"
+                               aria-label="Search document"
+                               id="{{ form2.search_query.id_for_label }}"
+                               required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-dark" id="{{ form2.search_query.id_for_label }}" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3">
+                                    <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                                    <line x1="21" y1="21" x2="15.8" y2="15.8"></line>
+                                </svg> 
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class='row mx-0'>
+            <div class='col'>
+                <div class='row jumbotron py-3 px-3'>
+                {% if not documents %}
+                    <div class='col text-center'>
+                        <h1>No documents</h6>
+                    </div>
+                {% else %}
+                {% for d in documents %}
+ 
+                    <div class='col-sm-auto'>
+                        <div class="card">
+                            <a class="text-dark"
+                               href="/documents/document/{{ d.id }}"
+                               style='text-decoration: none;white-space: nowrap;'
+                               data-toggle="tooltip"
+                               title ="Go to document">
+                                <div class="card-body text-center px-1 py-3">
+                                    {{ d.name }}
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                {% endfor %}
+                {% endif %}
+                
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+{% endblock %}

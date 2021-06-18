@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='container mt-3'>
+        <form enctype="multipart/form-data" action='/projects/new_project/' method='post'>
+            {% csrf_token %}
+            Users to add:
+            <div class="form-group">
+                <label for="{{ form.users.id_for_label }}"></label>
+                <select multiple name='{{ form.users.html_name }}' size='{{ form.users|length }}' class="form-control" id="{{ form.users.id_for_label }}">
+                {% for item in form.users %}
+                    {{ item }}
+                {% endfor %}
+                    <!-- <option value=''>Dont add<option> -->
+                </select>
+                {% for error in form.users.errors %}
+                <div class="alert alert-warning my-1" role='alert'>{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group" >
+                <label for='{{ form.project_name.id_for_label }}'>{{ form.project_name.label }}:</label>
+                <input type="text" class="form-control"
+                       id='{{ form.project_name.id_for_label }}'
+                       name='{{ form.project_name.html_name }}'
+                       {% if form.project_name.value %} value='{{ form.project_name.value }}' {% endif %}
+                       required>
+                {% for error in form.project_name.errors %}
+                <div class="alert alert-warning my-1" role='alert'>{{ error }}</div>
+                {% endfor %}
+            </div>
+        <button type="submit" class='btn btn-dark' id='btnSubmit'>Create project</button>
+        </form>
+    </div>
+{% endblock %}

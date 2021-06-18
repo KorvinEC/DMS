@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container pt-4'>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Fluid jumbotron</h1>
+            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+        </div>
+    </div>
+    {% if tasks %}
+    <div class='row mx-0  jumbotron py-3 px-3'>
+        <div class='col' >
+            <h1 class='text-center mb-3'>Current tasks</h1>
+        </div>
+        <div class='col-12'>
+            <div class='row'>
+                {% for task in tasks %}
+                <div class="col-4 pb-3 mb-3">
+                    <div class='card '>
+                        <a href='/projects/project/{{ task.project.project_key }}' 
+                           class='text-dark'
+                           style='text-decoration: none;white-space: nowrap;'
+                           data-toggle="tooltip"
+                           title ="Go to project {{ task.project.project_name }}">
+                        <div class="card-body px-0 py-2">
+                          <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                            <div class='row mb-0 card-title'>
+                                <div class='col-10'>
+                                    <h5>{{task.menRespons.first_name}} {{task.menRespons.last_name}}</h5>
+                                </div>
+                                <div class='col-2 clearfix'>
+                                {% if task.taskGiver == user %}
+                                <form method='post' class='float-right' action='/projects/project/{{ project.project_key }}/'>
+                                    {% csrf_token %}
+                                    <input name='delete_task'
+                                           id="delete_task"
+                                           type = 'hidden'
+                                           value = '{{ task.id }}'>
+                                    <button type="submit" class="close float-right" id='delete_task' aria-label="delete_task">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                </div>
+                            </div>
+                              <p class='mb-0'><strong>{{task.task}}</strong></p>
+                              <footer class="blockquote-footer text-right">{{task.taskGiver.first_name}} {{task.taskGiver.last_name}}</footer>
+                            </li>
+                            <li class="list-group-item">Task start: <strong>{{task.createDate}}</strong></li>
+                            <li class="list-group-item">Deadline: <strong>{{task.dueDate}}</strong></li>
+                          </ul>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+             </div>
+         </div>
+    </div>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+    {% endif %}
+
+</div>
+{% endblock %}
