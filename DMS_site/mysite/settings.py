@@ -39,7 +39,7 @@ if not exists(LOG_ROOT):
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b^0(gg71!fu478u6)77oy1fh6x0e++f!i^sxv%pesphl@uap_w'
+SECRET_KEY = 'secret_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
